@@ -1013,8 +1013,7 @@ public class JS_Report_Extraction {
 					System.out.println("Date from info "+Date);
 				}    
 
-				//System.out.println("TCexecutionStatus "+TCexecutionStatus);
-				//System.out.println("HashMapTcStatus "+HashMapTcStatus);
+
 
 				myReader.close();
 
@@ -1608,27 +1607,7 @@ public class JS_Report_Extraction {
 				if(Datesarry[1].equals("05")) {
 					Date = "May_"+Datesarry[2];
 				}
-				if(Datesarry[1].equals("06")) {
-					Date = "June_"+Datesarry[2];
-				}							      
-				if(Datesarry[1].equals("07")) {
-					Date = "July_"+Datesarry[2];
-				}
-				if(Datesarry[1].equals("08")) {
-					Date = "Aug_"+Datesarry[2];
-				}
-				if(Datesarry[1].equals("09")) {
-					Date = "Sept_"+Datesarry[2];
-				}
-				if(Datesarry[1].equals("10")) {
-					Date = "October_"+Datesarry[2];
-				}
-				if(Datesarry[1].equals("11")) {
-					Date = "Nov_"+Datesarry[2];
-				}
-				if(Datesarry[1].equals("12")) {
-					Date = "Dec_"+Datesarry[2];
-				}
+			
 			}
 			System.out.println(Date);
 				 */
