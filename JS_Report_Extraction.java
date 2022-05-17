@@ -1,19 +1,7 @@
 
 import java.awt.RenderingHints.Key;
 import java.io.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.*;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 //import java.util.HashMapQuoteCapt;
@@ -62,10 +50,10 @@ import org.apache.poi.common.usermodel.HyperlinkType;
 
 public class JS_Report_Extraction {
 
-//	static String fixPath="D:\\asd";
+//	static String fixPath = "C:\\PracticeOfflinePackage\\ReportsXML4\\POC-VM7\\admin\\Philips_Apttus\\1.01\\1.01";
 //	static File dir = new File(fixPath);
 //	static String reportPath = "C:\\\\Users\\\\murtaza.mithaiwala.ZENSOFT\\\\Zensoft_Services_Pvt._Ltd\\\\Sneha_Kanade_-_Philips_Project\\\\2021\\\\Suite_Result\\\\Others_Env\\\\utilitytest";
-//	static String reportPathOnLocal = "D:\\asd\\MultipleModelReportAnalysis_test";
+//	static String reportPathOnLocal = "C:\\PracticeOfflinePackage\\ReportsXML4\\ReportAnalysis";
 	static String reportPath;
 	static String reportPathOnLocal;
 	static String fixPath;
@@ -85,7 +73,7 @@ public class JS_Report_Extraction {
 	static String errorMessage = null;
 	static String modelInt;
 	static String modelInt2;
-	static int subFolderCntr=-1;
+	static int subFolderCntr=0;
 	static String stringDate;
 	static String TestcaseName;
 	static String ExecutionDateandTime;
@@ -240,14 +228,12 @@ public class JS_Report_Extraction {
 			int SuiteNameCount = 1;
 			int SuiteDateFormatCount = 1;
 
-			for(int itr=0;itr<subFolderCntr;itr++)
+			for(int itr=0 ;itr<subFolderCntr ;itr++)
 			{
-				File myObj = new File(dir+"\\"+itrFolderVal+"\\"+itrSubFolderVal+"\\ITR_1\\InfoLog.html");
-				itrSubFolderVal++;
+				
+				
 				int ModelNumberCount = 1;
-				int QuoteNumberCount = 1;
-				Scanner myReader = new Scanner(myObj);
-				Scanner MultiWrenchmyReader = new Scanner(myObj);
+				int QuoteNumberCount = 1;				
 				ArrayList<String> array_quoteNumber = new ArrayList<String>();
 				ArrayList<String> errorMessagearry = new ArrayList<String>();
 				ArrayList<String> extrarulesarry = new ArrayList<String>();
@@ -280,6 +266,7 @@ public class JS_Report_Extraction {
 				String ChildBundle = "";
 				String secondProduct = "";
 				String firstProduct = "";
+				String[] SuiteNamearay = null;
 //				while (MultiWrenchmyReader.hasNextLine()) 
 //				{
 //					String data = MultiWrenchmyReader.nextLine();
@@ -288,6 +275,18 @@ public class JS_Report_Extraction {
 //						MultiWrenchPresent = true;	
 //					}
 //				}
+				File myObj1 = new File(dir+"\\"+itrFolderVal+"\\"+itrSubFolderVal+"\\ITR_1\\InfoLog");
+				itrSubFolderVal++;
+				System.out.println("myObj1 "+myObj1);
+				String[] fileNameArray = myObj1.list();
+				int InfoCount = fileNameArray.length;
+				for(int j = 1; j <= InfoCount; j++)
+				{
+					File myObj = new File(myObj1+"\\InfoLog-"+j+".js");
+					
+					Scanner myReader = new Scanner(myObj);
+					Scanner MultiWrenchmyReader = new Scanner(myObj);
+					System.out.println("myObj "+myObj);
 				while (myReader.hasNextLine()) 
 				{
 					String data = myReader.nextLine();
@@ -295,116 +294,83 @@ public class JS_Report_Extraction {
 					if (fivePrevLines.size() > 10) {
 						fivePrevLines.removeFirst();
 					}
+//\-----------------------Qualitia Extract Model number, Suite Name and Execution date and time-------------------------
 					
-//					if(QuoteNumberCount == 1) {					
-//						if(data.contains("<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreVariable    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  ") && data.contains(" is stored successfully in the key 'QuoteNumberToCLone'</span>"))
-//						{  
-//							String rmWord="<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreVariable    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  ";
-//							quoteNumber=data.replaceAll(rmWord, "");
-//							quoteNumber=quoteNumber.substring(10,20);
-//							quotePresent=true;
-//							QuoteNumberCount++;
-//						}
-//					}
-
-					if(QuoteNumberCount == 1) {					
-						if(data.contains("<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreText    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  ")&& data.contains(" is stored successfully in the key 'QuoteNumber'</span>"))
-						{  
-						   String rmWord="<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreText    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  ";
-							quoteNumber=data.replaceAll(rmWord, "");
-							quoteNumber=quoteNumber.substring(10,20);
-							quotePresent=true;
-							QuoteNumberCount++;
-						}
-					}			
-
-					if(ModelNumberCount == 1) {
-						if(data.contains("Step Itinerary =>"))
-						{
-							String rmword = "<span name='Message' class='log-span step-log'><span class='log-label'>Step Itinerary => ";
-							String SuiteNameLine = data.replaceAll(rmword,"");
-							String[] SuiteNamearay = SuiteNameLine.split(" >> ");
-							System.out.println("SuiteNamearay "+SuiteNamearay[2]);
-							String TcNamearray[] = SuiteNamearay[2].split("_");
-							modelInt2 = TcNamearray[0];
-							
-							
-//							if(MultiWrenchPresent == true) {
-//								modelInt2 = TcNamearray[0]+" & "+TcNamearray[1];
-//								secondProduct = TcNamearray[1];
-//								firstProduct = TcNamearray[0];
-//								SequencedFailedReasons = SequencedFailedReasons+"\n"+"Product/Model :"+firstProduct;
-//							}
-							System.out.println("ModelNumberInfo: "+modelInt2);
-							ModelNumberCount++;
-						}
-					} 
-
 					if(SuiteNameCount == 1) {
-						for(i = 0; i < 15; i++) {
-							if(data.contains("Step Itinerary =>"))
+							if(data.contains("reportItinerary"))
 							{
-								String rmword = "<span name='Message' class='log-span step-log'><span class='log-label'>Step Itinerary => ";
-								String SuiteNameLine = data.replaceAll(rmword,"");
-								String[] SuiteNamearay = SuiteNameLine.split(" >> ");
-								SuiteName = SuiteNamearay[0];	
+							    String[] SuiteNameLinearray = data.split("\":\"");
+							    String SuiteNameLine = SuiteNameLinearray[1];
+								SuiteNamearay = SuiteNameLine.split(" >> ");
+								SuiteName = SuiteNamearay[0];
 								System.out.println("SuiteName in info: "+SuiteName);
-								break;
-							}
-							data = myReader.nextLine();
-						}
-						for(i = 0; i < 15; i++) {
-							if(data.contains("Execution Begin at: "))
-							{
-								String rmword = "<span name='Message' class='log-span'><span class='log-label'>Action Execution Begin at: </span>";
-								String SuiteTimeLine = data.replaceAll(rmword,"");
-								String[] SuiteTimearay = SuiteTimeLine.split("</span>");
+								String TcNamearray[] = SuiteNamearay[2].split("_");
+								modelInt2 = TcNamearray[0];
+								//System.out.println("Model Number: "+modelInt2);
+								SuiteNamearay = data.split("executionBeginAt\":\"");
+								String[] SuiteTimearay = SuiteNamearay[1].split("\",\"timeZoneOffset");
+								//System.out.println("begin time"+	SuiteTimearay[0]);
 								ExecutionDateandTime = SuiteTimearay[0];	
 								ExecutionDate = ExecutionDateandTime.substring(0,10);
 								ExecutionHours= ExecutionDateandTime.substring(11,13);
 								ExecutionMins = ExecutionDateandTime.substring(14,16);
 								ExecutionTime = ExecutionHours+" Hrs "+ExecutionMins+" mins";
-								System.out.println(ExecutionDate);
+								System.out.println("execution date from info"+ExecutionDate);
 								System.out.println("execution time from info"+ExecutionTime);
-								break;
 							}
-							data = myReader.nextLine();
-						}
-						System.out.println("SuiteNameCount "+SuiteNameCount);
+							SuiteNameCount++;
+						//System.out.println("SuiteNameCount "+SuiteNameCount);
 					}
-					SuiteNameCount++;
-
-
-					if(data.contains("ModelNumber"))
-					{
-
-						String rmWord= "<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreVariable    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  ";
-						String modelNumber=data.replaceAll(rmWord, "");
-						String[] ModelString = modelNumber.split("'", 0);
-						modelInt = ModelString[1];
-						if(modelInt.contains(" ")) {
-							String[] ModelNumberString2 = modelInt.split(" ", 0);
-							modelInt = ModelNumberString2[0];
-						}
-						System.out.println(modelInt+": modelInt from TestData for SS"); 
 					
+					if(ModelNumberCount == 1) {
+						if(data.contains("reportItinerary"))
+						{
+					String[] TCNameLinearray = data.split("stepItinerary\":\"");
+				    String TCNameLine = TCNameLinearray[1];
+					String[] TCNamearay = TCNameLine.split(" >> ");
+					System.out.println("TCNamearay size:"+TCNamearay[2]);
+					String TcNamearray2[] = TCNamearay[2].split("_");
+					modelInt2 = TcNamearray2[0];
+					System.out.println("Model Number for "+itrSubFolderVal+": "+modelInt2);
+					ModelNumberCount++;
+					   }
+						
 					}
+//\-----------------------Qualitia Extract Model number for ss folder name - pending-------------------------
+
+//					if(data.contains("ModelNumber"))
+//					{
+//
+//						String rmWord= "<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreVariable    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  ";
+//						String modelNumber=data.replaceAll(rmWord, "");
+//						String[] ModelString = modelNumber.split("'", 0);
+//						modelInt = ModelString[1];
+//						if(modelInt.contains(" ")) {
+//							String[] ModelNumberString2 = modelInt.split(" ", 0);
+//							modelInt = ModelNumberString2[0];
+//						}
+//						System.out.println(modelInt+": modelInt from TestData for SS"); 
+//					
+//					}
+//-------------------------------------------------Country Code--------------------------------------------------------------					
 					
 					if(data.contains("The Country Code"))
 					{
 
-						String rmWord= "<span name='Message' class='log-span'><span class='log-label'>Action: </span> PrintMessageInReport    <span class='log-label'> Status: </span>  passed    <span class='log-label'> Message: </span>";
-						String CountryCodestr =data.replaceAll(rmWord, "");
+						String[] CountryCodearray =data.split("Value=");
+						String CountryCodestr = CountryCodearray[1];
 						String[] CountryCodeArray = CountryCodestr.split("'", 0);
 						CountryCode = CountryCodeArray[1];
 						CountryCodePresent = true;		
+						System.out.println("Country code: "+CountryCode);
 						
 						Iterator <String> iterator = multiWrenchModel.keySet().iterator();
 						while(iterator.hasNext())  
 						{   
 							String key= iterator.next();
 							
-							if(key.contentEquals(modelInt2)) {	
+							if(key.contentEquals(modelInt2)) 
+							{	
 								List<String> CountryFromExcel = new ArrayList<>();
 								CountryFromExcel = multiWrenchModel.get(key);
 								if(CountryFromExcel.get(1).contentEquals(CountryCode)) {
@@ -418,87 +384,41 @@ public class JS_Report_Extraction {
 						}
 					}
 					
-				
-					
-					if(data.contains("<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreVariable    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  The data ") && data.contains("is stored successfully in the key 'ProductCode'</span>")) 
-					{						
-						String ProductCodeArry[] = data.split("'",0);
-						int ProductCodesize = ProductCodeArry.length;
-						String ProductCode = ProductCodeArry[ProductCodesize - 4];
-						if(insideChild == false) {
-							for(int i = 0; i <= 45; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickWrenchIcon'")) {
-								childStarts = true;
-								insideChild = true;
-								break;
-								}
-							}
+//---------------------------------------Extracting Quote Number----------------------------------------				
+					if(QuoteNumberCount == 1) {					
+						if(data.contains("is stored successfully in the key 'QuoteNumber'"))							
+						{  
+							String quoteNumberarray[] =data.split("message\":\"The data ");
+							quoteNumber = quoteNumberarray[1];
+							quoteNumber=quoteNumber.substring(1,11);
+							System.out.println("quoteNumber"+quoteNumber);
+							quotePresent=true;
+							QuoteNumberCount++;
 						}
-						
-						if(!ProductCode.contentEquals("")) 
-						{
-							errorOptionCnt++;
-							if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-							{
-								//System.out.println("endsWith");
-								SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-								//SequencedFailedReasons = SequencedFailedReasons.repl
-							}
-							ProductCodeNum = ProductCode;
-							if(childStarts == true) {
-								ChildBundle = "Inside Child Bundle-> "+ProductCode+"-> ";	
-								childStarts = false;
-							}
-							if(childEnds == true) {
-								ChildBundle = "";	
-								childEnds = false;
-							}
-							SequencedFailedReasons = SequencedFailedReasons+"\n"+ChildBundle+"Option-> "+ProductCode+" Failure Reasons: \n";
-						}
-						
-						if(insideChild == true) {
-							for(int i = 0; i <= 54; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickMainBundleLink'")) {
-								childEnds = true;
-								insideChild = false;
-								break;
-								}
-							}
-						}
-						
-						data = myReader.nextLine();
-					}
-					
-					if(MultiWrenchPresent==true && data.contains(" The value '"+secondProduct)) {
-						if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-						{
-							SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							if(SequencedFailedReasons.endsWith("Product/Model :"+firstProduct)) {
-								SequencedFailedReasons = SequencedFailedReasons.replace("Product/Model :"+firstProduct,"");
-							}
-						}
-						SequencedFailedReasons = SequencedFailedReasons+"\n"+"Product/Model :"+secondProduct;
-						data = myReader.nextLine();
-					}
-					
+					}			
+//----------------------------------------------------------------------------------------------------------------
+
 					//if(data.contains("</span>  Failed") || data.contains("</span>  failed")||data.contains("</span> Failed"))
-					if(data.contains("</span>  Failed") || data.contains("</span>  failed")||data.contains("</span> Failed") || data.contains("Failed") || data.contains("failed"))
+					if(data.contains("\"status\":\"FAILED\""))
 					{ 
+						//System.out.println("Inside failed message if");
 						if(FirstErrorMessage == 0 ) {
 							FirstErrorMessage++;
 							errorMessagearry.add("Failed: ");
 							//SequencedFailedReasons = SequencedFailedReasons+"Failed: ";
 						}
-
-						String[] errorMessagespltarry = data.split("</span>",0);
+						if(data.contains("message\":\""))
+						{					
+						
+						String[] errorMessagespltarry = data.split("message\":\"",0);
+						errorMessagespltarry = errorMessagespltarry[1].split("\",\"");
 						a = errorMessagespltarry.length;	
-						if(errorMessagespltarry[a-1].contains("not found on Catlog page")||errorMessagespltarry[a-1].contains("not found on Configuration page")||errorMessagespltarry[a-1].contains("Spinning wheel")||errorMessagespltarry[a-1].contains("Greyed Out")||errorMessagespltarry[a-1].contains("1/1 match")||errorMessagespltarry[a-1].contains("0/0 Match")||errorMessagespltarry[a-1].contains("Auto selected")||errorMessagespltarry[a-1].contains("Either Change")||errorMessagespltarry[a-1].contains("Go - to - Pricing")||errorMessagespltarry[a-1].contains("Wrenchicon")||errorMessagespltarry[a-1].contains("Actual string") || errorMessagespltarry[a-1].contains("Product Description on catalog")||errorMessagespltarry[a-1].contains("Product Code on catalog")||errorMessagespltarry[a-1].contains("NPO")||errorMessagespltarry[a-1].contains("not available"))
+						if(errorMessagespltarry[0].contains("not found on Catlog page")||errorMessagespltarry[0].contains("not found on Configuration page")||errorMessagespltarry[0].contains("Spinning wheel")||errorMessagespltarry[0].contains("Greyed Out")||errorMessagespltarry[0].contains("1/1 match")||errorMessagespltarry[0].contains("0/0 Match")||errorMessagespltarry[0].contains("Auto selected")||errorMessagespltarry[0].contains("Either Change")||errorMessagespltarry[0].contains("Go - to - Pricing")||errorMessagespltarry[0].contains("Wrenchicon")||errorMessagespltarry[0].contains("Actual string") || errorMessagespltarry[0].contains("Product Description on catalog")||errorMessagespltarry[0].contains("Product Code on catalog")||errorMessagespltarry[0].contains("NPO")||errorMessagespltarry[0].contains("not available"))
 						{
-							errorMessagearry.add(errorMessagespltarry[a-1]);
-							System.out.println("SequencedFailedReasons : "+SequencedFailedReasons+" /n"+modelInt2+" Before if outside while ChildBundle: '"+ChildBundle+"' /nProductCodeNum: '"+ProductCodeNum+"'");
-
+							errorMessagearry.add(errorMessagespltarry[0]);
+							//System.out.println("SequencedFailedReasons : "+SequencedFailedReasons+" /n"+modelInt2+" Before if outside while ChildBundle: '"+ChildBundle+"' /nProductCodeNum: '"+ProductCodeNum+"'");
+							//System.out.println("FailedReasons : "+errorMessagespltarry[0]);
+							
 							if((errorMessagespltarry[a-1].contains("Wrenchicon Shows pending configuration")||errorMessagespltarry[a-1].contains("Go - to - Pricing Disabled.")) && SequencedFailedReasons.endsWith("Failure Reasons: \n"))
 							{
 								System.out.println("SequencedFailedReasons : "+SequencedFailedReasons+" /n"+modelInt2+" inside if outside while ChildBundle: '"+ChildBundle+"' /nProductCodeNum: '"+ProductCodeNum+"'");
@@ -516,73 +436,15 @@ public class JS_Report_Extraction {
 								System.out.println(modelInt2+"inside else secondProduct: "+secondProduct);
 								SequencedFailedReasons = SequencedFailedReasons+errorMessagespltarry[a-1]+"\n";
 							}
+							//break;
 						}	        		
 						errorpresent = true;
+						}
+						else{
+							errorpresent = true;
+						}
 					}
 
-
-					if(data.contains("<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreVariable    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  The data ") && data.contains("is stored successfully in the key 'ProductCode'</span>")) 
-					{						
-						String ProductCodeArry[] = data.split("'",0);
-						int ProductCodesize = ProductCodeArry.length;
-						String ProductCode = ProductCodeArry[ProductCodesize - 4];
-						if(insideChild == false) {
-							for(int i = 0; i <= 45; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickWrenchIcon'")) {
-								childStarts = true;
-								insideChild = true;
-								break;
-								}
-							}
-						}
-						
-						if(!ProductCode.contentEquals("")) 
-						{
-							errorOptionCnt++;
-							if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-							{
-								//System.out.println("endsWith");
-								SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							}
-							ProductCodeNum = ProductCode;
-							if(childStarts == true) {
-								ChildBundle = "Inside Child Bundle-> "+ProductCode+"-> ";	
-								childStarts = false;
-							}
-							if(childEnds == true) {
-								ChildBundle = "";	
-								childEnds = false;
-							}
-							SequencedFailedReasons = SequencedFailedReasons+"\n"+ChildBundle+"Option-> "+ProductCode+" Failure Reasons: \n";
-						}
-						
-						if(insideChild == true) {
-							for(int i = 0; i <= 54; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickMainBundleLink'")) {
-								childEnds = true;
-								insideChild = false;
-								break;
-								}
-							}
-						}
-						
-						data = myReader.nextLine();
-					}
-					
-					if(MultiWrenchPresent==true && data.contains(" The value '"+secondProduct)) {
-						if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-						{
-							SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							if(SequencedFailedReasons.endsWith("Product/Model :"+firstProduct)) {
-								SequencedFailedReasons = SequencedFailedReasons.replace("Product/Model :"+firstProduct,"");
-							}
-						}
-						SequencedFailedReasons = SequencedFailedReasons+"\n"+"Product/Model :"+secondProduct;
-						data = myReader.nextLine();
-					}
-					
 					if(data.contains("The follwing value(s) are in expected Data, but not available on UI - "))
 					{
 						if(errorOptionCnt == 0) {
@@ -591,165 +453,28 @@ public class JS_Report_Extraction {
 						else {
 							SequencedFailedReasons = SequencedFailedReasons+" Rules Not on UI:"+"\n";
 						}
-						data = myReader.nextLine();
+						
 						int ExpectedErrorCount = 1;
-						do {		    			
-							String[] expectedrulesarry = data.split("'>"+ExpectedErrorCount+".",0);
-							int b = expectedrulesarry.length;
-							String[] qaz = expectedrulesarry[b-1].split("</",0);
-							Expectedrulesarry.add(qaz[0]);
-							SequencedFailedReasons = SequencedFailedReasons+qaz[0]+"\n";
-							ExpectedErrorCount++;
-							data = myReader.nextLine();
-							ExpectedRulesPresent  = true;
-						}while(data.contains(ExpectedErrorCount+"."));
-					}
+						String[] expectedrulesarry = data.split("</b>");
+						int abb = expectedrulesarry.length;
+						System.out.println("expectedrulesarry "+expectedrulesarry[abb-2]);
 
-
-					if(data.contains("<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreVariable    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  The data ") && data.contains("is stored successfully in the key 'ProductCode'</span>")) 
-					{						
-						String ProductCodeArry[] = data.split("'",0);
-						int ProductCodesize = ProductCodeArry.length;
-						String ProductCode = ProductCodeArry[ProductCodesize - 4];
-						if(insideChild == false) {
-							for(int i = 0; i <= 45; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickWrenchIcon'")) {
-								childStarts = true;
-								insideChild = true;
+						String[] qaz = expectedrulesarry[abb-2].split("\",");
+						//System.out.println("qaz "+qaz[1]);
+						for(int i = 1;i<=qaz.length;i++){
+							if(qaz[i].startsWith("\""+ExpectedErrorCount+". ")){
+								String[] actualExpectedError = qaz[i].split("\""+ExpectedErrorCount+".");
+								System.out.println("qaz of expeted rules "+actualExpectedError[1]);
+								Expectedrulesarry.add(actualExpectedError[1]);
+								ExpectedRulesPresent  = true;
+								ExpectedErrorCount++;
+							}
+							else{
 								break;
-								}
 							}
 						}
-						
-						if(!ProductCode.contentEquals("")) 
-						{
-							errorOptionCnt++;
-							if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-							{
-								//System.out.println("endsWith");
-								SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							}
-							ProductCodeNum = ProductCode;
-							if(childStarts == true) {
-								ChildBundle = "Inside Child Bundle-> "+ProductCode+"-> ";	
-								childStarts = false;
-							}
-							if(childEnds == true) {
-								ChildBundle = "";	
-								childEnds = false;
-							}
-							SequencedFailedReasons = SequencedFailedReasons+"\n"+ChildBundle+"Option-> "+ProductCode+" Failure Reasons: \n";
-						}
-						
-						if(insideChild == true) {
-							for(int i = 0; i <= 54; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickMainBundleLink'")) {
-								childEnds = true;
-								insideChild = false;
-								break;
-								}
-							}
-						}
-						
-						data = myReader.nextLine();
-					}
-					
-					if(MultiWrenchPresent==true && data.contains(" The value '"+secondProduct)) {
-						if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-						{
-							SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							if(SequencedFailedReasons.endsWith("Product/Model :"+firstProduct)) {
-								SequencedFailedReasons = SequencedFailedReasons.replace("Product/Model :"+firstProduct,"");
-							}
-						}
-						SequencedFailedReasons = SequencedFailedReasons+"\n"+"Product/Model :"+secondProduct;
-						data = myReader.nextLine();
-					}
-					
-					if(data.contains("The follwing value(s) are in expected Data, which should not be available on UI, but those are available on UI -"))
-					{
-
-							SequencedFailedReasons = SequencedFailedReasons+" Rules Not Eradicated:"+"\n";
-						
-						data = myReader.nextLine();
-						int NotEradicatedErrorCount = 1;
-						do {
-							String[] expectedrulesarry = data.split("'>"+NotEradicatedErrorCount+".",0);
-							int b = expectedrulesarry.length;
-							String[] qaz = expectedrulesarry[b-1].split("</",0);
-							NotEradicatedrulesarry.add(qaz[0]);
-							SequencedFailedReasons = SequencedFailedReasons+qaz[0]+"\n";
-							NotEradicatedErrorCount++;
-							data = myReader.nextLine();
-							NotEradicatedRulesPresent  = true;
-						}while(data.contains(NotEradicatedErrorCount+"."));
 					}
 
-
-					if(data.contains("<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreVariable    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  The data ") && data.contains("is stored successfully in the key 'ProductCode'</span>")) 
-					{						
-						String ProductCodeArry[] = data.split("'",0);
-						int ProductCodesize = ProductCodeArry.length;
-						String ProductCode = ProductCodeArry[ProductCodesize - 4];
-						if(insideChild == false) {
-							for(int i = 0; i <= 45; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickWrenchIcon'")) {
-								childStarts = true;
-								insideChild = true;
-								break;
-								}
-							}
-						}
-						
-						if(!ProductCode.contentEquals("")) 
-						{
-							errorOptionCnt++;
-							if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-							{
-								//System.out.println("endsWith");
-								SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							}
-							ProductCodeNum = ProductCode;
-							if(childStarts == true) {
-								ChildBundle = "Inside Child Bundle-> "+ProductCode+"-> ";	
-								childStarts = false;
-							}
-							if(childEnds == true) {
-								ChildBundle = "";	
-								childEnds = false;
-							}
-							SequencedFailedReasons = SequencedFailedReasons+"\n"+ChildBundle+"Option-> "+ProductCode+" Failure Reasons: \n";
-						}
-						
-						if(insideChild == true) {
-							for(int i = 0; i <= 54; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickMainBundleLink'")) {
-								childEnds = true;
-								insideChild = false;
-								break;
-								}
-							}
-						}
-						
-						data = myReader.nextLine();
-					}
-					
-					if(MultiWrenchPresent==true && data.contains(" The value '"+secondProduct)) {
-						if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-						{
-							SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							if(SequencedFailedReasons.endsWith("Product/Model :"+firstProduct)) {
-								SequencedFailedReasons = SequencedFailedReasons.replace("Product/Model :"+firstProduct,"");
-							}
-						}
-						SequencedFailedReasons = SequencedFailedReasons+"\n"+"Product/Model :"+secondProduct;
-						data = myReader.nextLine();
-					}
-					
 					if(data.contains("The follwing value(s) are on UI, but not available in Test Data - "))
 					{
 						if(errorOptionCnt == 0) {
@@ -757,82 +482,31 @@ public class JS_Report_Extraction {
 						}else {
 							SequencedFailedReasons = SequencedFailedReasons+" Extra Rules on UI:"+"\n";
 						}
-						data = myReader.nextLine();
+						//data = myReader.nextLine();
 						int ErrorCount = 1;
-						do {
-							String[] rulesarry = data.split("'>"+ErrorCount+".",0);
-							int b = rulesarry.length;
-							String[] qaz = rulesarry[b-1].split("</",0);			   
-							extrarulesarry.add(qaz[0]);
-							SequencedFailedReasons = SequencedFailedReasons+qaz[0]+"\n";
-							ErrorCount++;
-							ExtraRulesPresent = true;
-							data = myReader.nextLine();
-						}while(data.contains(ErrorCount+"."));
+						String[] rulesarry = data.split("</b>");
+						int acc = rulesarry.length;
+						System.out.println("extrarrulesarry "+rulesarry[acc-1]);
+						String[] qaz = rulesarry[acc-1].split("\",");
+						//System.out.println("qaz of extraaa "+qaz[2]);
+						//System.out.println("qaz lent"+qaz.length);
+						for(int i = 1;i<=qaz.length;i++){
+							
+							if(qaz[i].startsWith("\""+ErrorCount+". ")){
+								//String[] qaz = rulesarry[acc-1].split("\",\"");
+								String[] actualExtraError = qaz[i].split("\""+ErrorCount+". ",0);
+								System.out.println("actualExtraError[1] "+actualExtraError[1]);
+								//System.out.println("qaz of extra rules "+qaz[i]);
+								extrarulesarry.add(actualExtraError[1]);
+								ExtraRulesPresent = true;
+								ErrorCount++;
+							}
+							else{
+								break;
+							}
+						}
 					}
-					
 
-					if(data.contains("<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreVariable    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  The data ") && data.contains("is stored successfully in the key 'ProductCode'</span>")) 
-					{						
-						String ProductCodeArry[] = data.split("'",0);
-						int ProductCodesize = ProductCodeArry.length;
-						String ProductCode = ProductCodeArry[ProductCodesize - 4];
-						if(insideChild == false) {
-							for(int i = 0; i <= 45; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickWrenchIcon'")) {
-								childStarts = true;
-								insideChild = true;
-								break;
-								}
-							}
-						}
-						
-						if(!ProductCode.contentEquals("")) 
-						{
-							errorOptionCnt++;
-							if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-							{
-								//System.out.println("endsWith");
-								SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							}
-							ProductCodeNum = ProductCode;
-							if(childStarts == true) {
-								ChildBundle = "Inside Child Bundle-> "+ProductCode+"-> ";	
-								childStarts = false;
-							}
-							if(childEnds == true) {
-								ChildBundle = "";	
-								childEnds = false;
-							}
-							SequencedFailedReasons = SequencedFailedReasons+"\n"+ChildBundle+"Option-> "+ProductCode+" Failure Reasons: \n";
-						}
-						
-						if(insideChild == true) {
-							for(int i = 0; i <= 54; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickMainBundleLink'")) {
-								childEnds = true;
-								insideChild = false;
-								break;
-								}
-							}
-						}
-						
-						data = myReader.nextLine();
-					}
-					
-					if(MultiWrenchPresent==true && data.contains(" The value '"+secondProduct)) {
-						if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-						{
-							SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							if(SequencedFailedReasons.endsWith("Product/Model :"+firstProduct)) {
-								SequencedFailedReasons = SequencedFailedReasons.replace("Product/Model :"+firstProduct,"");
-							}
-						}
-						SequencedFailedReasons = SequencedFailedReasons+"\n"+"Product/Model :"+secondProduct;
-						data = myReader.nextLine();
-					}
 					
 					if(data.contains("Element is not visible for comparison with expected data"))
 					{
@@ -843,126 +517,91 @@ public class JS_Report_Extraction {
 							SequencedFailedReasons = SequencedFailedReasons+" Rules Not on UI:"+"\n";
 						}
 						int ExpectedErrorCount = 1;
-						for (String preline : fivePrevLines) {
-							if(preline.contains(ExpectedErrorCount+". ")){
-								//							if(preline.contains("The values fetched from the Test Data - ")){
-								//								preline = myReader.nextLine();
-								String[] expectedrulesarry = preline.split("'>"+ExpectedErrorCount+".",0);
-								int b = expectedrulesarry.length;
-								String[] qaz = expectedrulesarry[b-1].split("</",0);
-								Expectedrulesarry.add(qaz[0]);
-								SequencedFailedReasons = SequencedFailedReasons+qaz[0]+"\n";
+						String[] rulesarry = data.split("</b>");
+						int acc = rulesarry.length;
+						//System.out.println("expectedrulesarry "+rulesarry[acc-1]);
+						String[] ExpectederrorList = rulesarry[acc-1].split("\"],\"status");
+						String[] qaz = ExpectederrorList[0].split("\",");
+						//System.out.println("qaz lent"+qaz.length);
+						for(int i = 1; i < qaz.length;  i++){
+							if(qaz[i].startsWith("\""+ExpectedErrorCount+". ")){
+								String[] actualExpectedError = qaz[i].split("\""+ExpectedErrorCount+".");
+								System.out.println("qaz of expected rules1 "+actualExpectedError[1]);
+								extrarulesarry.add(actualExpectedError[1]);
+								ExpectedRulesPresent = true;
 								ExpectedErrorCount++;
 							}
-							ExpectedRulesPresent  = true;
+							else{
+								break;
+							}
 						}
 					} 
 
+					
+					if(data.contains("The follwing value(s) are in expected Data, which should not be available on UI, but those are available on UI -"))
+					{
+							SequencedFailedReasons = SequencedFailedReasons+" Rules Not Eradicated:"+"\n";
 
-					if(data.contains("<span name='Message' class='log-span'><span class='log-label'>Action: </span> StoreVariable    <span class='log-label'> Status: </span>  Passed    <span class='log-label'> Message: </span>  The data ") && data.contains("is stored successfully in the key 'ProductCode'</span>")) 
-					{						
-						String ProductCodeArry[] = data.split("'",0);
-						int ProductCodesize = ProductCodeArry.length;
-						String ProductCode = ProductCodeArry[ProductCodesize - 4];
-						if(insideChild == false) {
-							for(int i = 0; i <= 45; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickWrenchIcon'")) {
-								childStarts = true;
-								insideChild = true;
+						int NotEradicatedErrorCount = 1;
+						String[] rulesarry = data.split("</b>");
+						int acc = rulesarry.length;
+						System.out.println("noteradrrulesarry "+rulesarry[acc-1]);
+						String[] qaz = rulesarry[acc-1].split("\",");
+						for(int i = 1;i<=qaz.length;i++){							
+							if(qaz[i].startsWith("\""+NotEradicatedErrorCount+". ")){
+								String[] noteradrrules = qaz[i].split("\""+NotEradicatedErrorCount+". ",0);
+								System.out.println("noteradrrules[1] "+noteradrrules[1]);
+								NotEradicatedrulesarry.add(noteradrrules[1]);
+								NotEradicatedRulesPresent = true;
+								NotEradicatedErrorCount++;
+							}
+							else{
 								break;
-								}
 							}
 						}
-						
-						if(!ProductCode.contentEquals("")) 
-						{
-							errorOptionCnt++;
-							if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-							{
-								//System.out.println("endsWith");
-								SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							}
-							ProductCodeNum = ProductCode;
-							if(childStarts == true) {
-								ChildBundle = "Inside Child Bundle-> "+ProductCode+"-> ";	
-								childStarts = false;
-							}
-							if(childEnds == true) {
-								ChildBundle = "";	
-								childEnds = false;
-							}
-							SequencedFailedReasons = SequencedFailedReasons+"\n"+ChildBundle+"Option-> "+ProductCode+" Failure Reasons: \n";
-						}
-						
-						if(insideChild == true) {
-							for(int i = 0; i <= 54; i++) {
-								data = myReader.nextLine();
-								if(data.contains("The data 'true' is stored successfully in the key 'clickMainBundleLink'")) {
-								childEnds = true;
-								insideChild = false;
-								break;
-								}
-							}
-						}
-						
-						data = myReader.nextLine();
+
 					}
-					
-					if(MultiWrenchPresent==true && data.contains(" The value '"+secondProduct)) {
-						if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-						{
-							SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							if(SequencedFailedReasons.endsWith("Product/Model :"+firstProduct)) {
-								SequencedFailedReasons = SequencedFailedReasons.replace("Product/Model :"+firstProduct,"");
-							}
-						}
-						SequencedFailedReasons = SequencedFailedReasons+"\n"+"Product/Model :"+secondProduct;
-						data = myReader.nextLine();
-					}
-					
+
 					if(data.contains("ErrorNotExpect")){
-						for(i = 0; i < 3; i++) {
-							data = myReader.nextLine();
-						}
-						int ErrorCount = 1;
 						if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
 						{
 							SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
 						}
 						SequencedFailedReasons = SequencedFailedReasons+"\n After All Option Selection following Errors: \n";
-						do {
-							String[] rulesarry = data.split("'>"+ErrorCount+".",0);
-							int b = rulesarry.length;
-							String[] qaz = rulesarry[b-1].split("</",0);
-							rulesEvenAfter.add(qaz[0]);
-							SequencedFailedReasons = SequencedFailedReasons+qaz[0]+"\n";
-							ErrorCount++;
-							evenAfterRulesPresent = true;
-							data = myReader.nextLine();
-						}while(data.contains(ErrorCount+"."));
-					}
-					
-					if(MultiWrenchPresent==true && data.contains(" The value '"+secondProduct)) {
-						if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-						{
-							SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-							if(SequencedFailedReasons.endsWith("Product/Model :"+firstProduct)) {
-								SequencedFailedReasons = SequencedFailedReasons.replace("Product/Model :"+firstProduct,"");
+						int ErrorCount = 1;
+						String[] rulesarry = data.split("</b>");
+						int acc = rulesarry.length;
+						System.out.println("evenafterrules "+rulesarry[acc-1]);
+						String[] qaz = rulesarry[acc-1].split("\",");
+						for(int i = 1;i<=qaz.length;i++){							
+							if(qaz[i].startsWith("\""+ErrorCount+". ")){
+								String[] evenafterrules = qaz[i].split("\""+ErrorCount+". ",0);
+								System.out.println("evenafterrules[1] "+evenafterrules[1]);
+								rulesEvenAfter.add(evenafterrules[1]);
+								evenAfterRulesPresent = true;
+								ErrorCount++;
+							}
+							else{
+								break;
 							}
 						}
-						SequencedFailedReasons = SequencedFailedReasons+"\n"+"Product/Model :"+secondProduct;
-						data = myReader.nextLine();
+//						do {
+//							String[] rulesarry = data.split("'>"+ErrorCount+".",0);
+//							int b = rulesarry.length;
+//							String[] qaz = rulesarry[b-1].split("</",0);
+//							rulesEvenAfter.add(qaz[0]);
+//							SequencedFailedReasons = SequencedFailedReasons+qaz[0]+"\n";
+//							ErrorCount++;
+//							evenAfterRulesPresent = true;
+//							data = myReader.nextLine();
+//						}while(data.contains(ErrorCount+"."));
 					}
 					
 				} 
-//				System.out.println(modelInt2+" Before if outside while ChildBundle: '"+ChildBundle+"' ProductCodeNum: '"+ProductCodeNum+"'");
-//				if(SequencedFailedReasons.endsWith("Failure Reasons: \n"))
-//				{
-//					System.out.println(modelInt2+" if outside while ChildBundle: '"+ChildBundle+"' ProductCodeNum: '"+ProductCodeNum+"'");
-//					SequencedFailedReasons = SequencedFailedReasons.replace("\n"+ChildBundle+"Option-> "+ProductCodeNum+" Failure Reasons: \n", "");
-//				}
-				
+				myReader.close();
+			}
+				//System.out.println("Expectedrulesarry print"+Expectedrulesarry);
+
 				if(SuiteDateFormatCount == 1) {
 					SuiteDateFormatCount++;
 					if(ExecutionDate.endsWith(" ")) {
@@ -972,7 +611,7 @@ public class JS_Report_Extraction {
 
 					if(ExecutionDate.startsWith("202")) {
 						String[] Datesarry = ExecutionDate.split("-");
-						System.out.println(Datesarry[1]);
+						//System.out.println(Datesarry[1]);
 						if(Datesarry[1].equals("01")) {
 							Date = "Jan_"+Datesarry[2];
 						}
@@ -1013,9 +652,10 @@ public class JS_Report_Extraction {
 					System.out.println("Date from info "+Date);
 				}    
 
+				//System.out.println("TCexecutionStatus "+TCexecutionStatus);
+				//System.out.println("HashMapTcStatus "+HashMapTcStatus);
 
-
-				myReader.close();
+				
 
 				ArrayList<String> newExpectedrulesarry = new ArrayList<String>(); 
 				ArrayList<String> newextrarulesarry = new ArrayList<String>(); 
@@ -1097,13 +737,13 @@ public class JS_Report_Extraction {
 						evenAfterRulesString = evenAfterRulesString+"\n"+ar+")"+i;
 					ar++;
 				}
-				System.out.println("errorMessagearry: "+errorMessagearry);
+				//System.out.println("errorMessagearry: "+errorMessagearry);
 				int at = 1;
 				for(String i : errorMessagearry) {
 					if(at == 1 || at == 2)
 						HashMapErrorMessagesString = HashMapErrorMessagesString+i;
 					else if(i.contains("Wrenchicon Shows pending configuration.")) {
-						System.out.println("in wrench if");
+						//System.out.println("in wrench if");
 						HashMapErrorMessagesString = HashMapErrorMessagesString+i;
 					}
 					else
@@ -1174,7 +814,7 @@ public class JS_Report_Extraction {
 				}
 				else {
 					FailedCount++;
-					System.out.println("FailedCount "+FailedCount);
+					//System.out.println("FailedCount "+FailedCount);
 					TCexecutionStatus.put(modelInt2, "1");
 					if(modelInt2dupliPresent == true) {
 						TCexecutionStatus.put(modelInt2dupli, "1");
@@ -1185,7 +825,7 @@ public class JS_Report_Extraction {
 					
 					SeceuencedFailureMap.put(modelInt2, "Failed: "+SequencedFailedReasons);
 				
-					System.out.println("fail");
+					//System.out.println("fail");
 				} 
 				
 				SequencedFailedReasons = "";
@@ -1196,14 +836,14 @@ public class JS_Report_Extraction {
 				}
 
 				if(errorpresent == true) {
-					System.out.println(modelInt2);
+					//System.out.println(modelInt2);
 					if(modelInt2dupliPresent == true) {
 						HashMapErrorMessages.put(modelInt2dupli, HashMapErrorMessagesString);
 					}
 					HashMapErrorMessages.put(modelInt2,HashMapErrorMessagesString);
 				}
 				else {
-					System.out.println(modelInt2);
+					//System.out.println(modelInt2);
 					if(modelInt2dupliPresent == true) {
 						HashMapErrorMessages.put(modelInt2dupli,noErrorMessagearryString);
 					}
@@ -1303,7 +943,7 @@ public class JS_Report_Extraction {
 			System.out.println("evenAfterRules :"+evenAfterRules);
 			System.out.println("ExpectedRules :"+ExpectedRules);
 			System.out.println("ExtraRules :"+ExtraRules);	
-			System.out.println("SeceuencedFailureMap "+SeceuencedFailureMap);
+			//System.out.println("SeceuencedFailureMap "+SeceuencedFailureMap);
 /*
 			for(excelPrintIterator = 1;excelPrintIterator < 3;excelPrintIterator++) {
 				if(excelPrintIterator == 1) {
@@ -1317,7 +957,8 @@ public class JS_Report_Extraction {
 			}
 			
 */
-		}
+			}
+			
 
 		catch (FileNotFoundException e) 
 		{
@@ -1528,7 +1169,7 @@ public class JS_Report_Extraction {
 			} 
 			else
 			{ 
-				subFolderCntr=-1;
+				subFolderCntr=0;
 				for ( i = 0; i< size; i++)
 				{
 					filename = fileNameArray[i];
@@ -1607,7 +1248,27 @@ public class JS_Report_Extraction {
 				if(Datesarry[1].equals("05")) {
 					Date = "May_"+Datesarry[2];
 				}
-			
+				if(Datesarry[1].equals("06")) {
+					Date = "June_"+Datesarry[2];
+				}							      
+				if(Datesarry[1].equals("07")) {
+					Date = "July_"+Datesarry[2];
+				}
+				if(Datesarry[1].equals("08")) {
+					Date = "Aug_"+Datesarry[2];
+				}
+				if(Datesarry[1].equals("09")) {
+					Date = "Sept_"+Datesarry[2];
+				}
+				if(Datesarry[1].equals("10")) {
+					Date = "October_"+Datesarry[2];
+				}
+				if(Datesarry[1].equals("11")) {
+					Date = "Nov_"+Datesarry[2];
+				}
+				if(Datesarry[1].equals("12")) {
+					Date = "Dec_"+Datesarry[2];
+				}
 			}
 			System.out.println(Date);
 				 */
@@ -1682,8 +1343,8 @@ public class JS_Report_Extraction {
 				System.out.println("Excel written successfully..on Local");
 			}
 			else {
-				printinExcel(reportPath);
-				System.out.println("Excel written successfully..on Drive");
+//				printinExcel(reportPath);
+//				System.out.println("Excel written successfully..on Drive");
 			}
 		}
 	}
