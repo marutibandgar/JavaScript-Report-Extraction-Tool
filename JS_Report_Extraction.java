@@ -50,16 +50,15 @@ import org.apache.poi.common.usermodel.HyperlinkType;
 
 public class JS_Report_Extraction {
 
-//	static String fixPath = "C:\\PracticeOfflinePackage\\ReportsXML4\\POC-VM7\\admin\\Philips_Apttus\\1.01\\1.01";
+//	static String fixPath = ""; // Report fixed path.
 //	static File dir = new File(fixPath);
-//	static String reportPath = "C:\\\\Users\\\\murtaza.mithaiwala.ZENSOFT\\\\Zensoft_Services_Pvt._Ltd\\\\Sneha_Kanade_-_Philips_Project\\\\2021\\\\Suite_Result\\\\Others_Env\\\\utilitytest";
-//	static String reportPathOnLocal = "C:\\PracticeOfflinePackage\\ReportsXML4\\ReportAnalysis";
+//	static String reportPath = ""; //Enter here report path(Dyanamic path).
+//	static String reportPathOnLocal = ""; //local result path
 	static String reportPath;
 	static String reportPathOnLocal;
 	static String fixPath;
-	static File dir;
-	//static String Modalitysheet = "C:\\Users\\murtaza.mithaiwala.ZENSOFT\\Zensoft_Services_Pvt._Ltd\\Sneha_Kanade_-_Philips_Project\\2021\\Suite_Result\\Others_Env\\Modality";
-	static String Modalitysheet = "C:\\OneDrive\\Zensoft Services Pvt. Ltd\\PHILIPS - Suite Result\\Others Env\\Modality";	
+	static File dir=""; //External Excel file reading path.
+	static String Modalitysheet = ""; //External Excel file reading path.
 	static String fixPath1;
 	static String filename=null;
 	static int excelPrintIterator = 0;
